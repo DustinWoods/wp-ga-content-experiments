@@ -1,0 +1,71 @@
+#wpgacxm-meta-box label {
+	vertical-align: baseline;
+}
+
+#wpgacxm-meta-box .inside {
+	margin: 0;
+	padding: 0;
+}
+
+#wpgacxm-meta-box #experiment-status-display {
+	font-weight: bold;
+}
+
+#wpgacxm-meta-box .misc-experiment-props {
+	margin: 6px 0 0 0;
+}
+
+#wpgacxm-meta-box .advanced-experimnt-prop {
+	display: none;
+}
+
+#major-experiment-actions {
+	padding: 10px;
+	clear: both;
+	border-top: 1px solid #ddd;
+	background: #f5f5f5;
+}
+
+#experiment-action {
+	text-align: right;
+	float: right;
+	line-height: 23px;
+}
+
+#major-experiment-actions .deletion {
+	color: #a00;
+	text-decoration: none;
+}
+
+#wpgacxm-meta-box > h3:before {
+	font-family: dashicons;
+	content: '\f325';
+	margin-right: 5px;
+	vertical-align: middle;
+	font-size: 1.3em;
+}
+
+.edit-experiment-prop {
+	display: inline-block;
+	position: relative;
+}
+.edit-experiment-prop .edit-link {
+
+}
+.edit-experiment-prop .edit-area {
+	display: none;
+	position: absolute;
+	left: 2px;
+	top: -4px;
+	padding: 3px 4px;
+	background: #F3F3F3;
+	z-index: 99998;
+	box-shadow: 0px 8px 11px -6px rgba(0, 0, 0, 0.44);
+	border: 1px solid #E3E3E3;
+}
+.edit-experiment-prop .edit-link .dashicons-edit {
+	text-decoration: none;
+	font-size: .97em;
+	vertical-align: super;
+	margin: -100% -5% 0 0;
+}

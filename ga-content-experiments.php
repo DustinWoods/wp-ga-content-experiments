@@ -20,29 +20,130 @@ Author URI: http://dustinwoods.net/
  * 		
  */
 
+// Make sure we don't expose any info if called directly
+if ( ! defined( 'ABSPATH' ) ) {
+  echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+  exit;
+}
 
-function wpgacxm_manage_posts_columns() {
-  //Show flags in list for all registered post types ( so also custom posts )
-  $post_types = get_post_types('','names');
-  $post_types = apply_filters( 'wpgacxm_manage_post_types', $post_types );
+//Define some useful stuff
+define( 'WPGACXM_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'WPGACXM_PLUGIN_ADMIN_PATH', WPGACXM_PLUGIN_PATH . trailingslashit ( 'admin' ) );
+define( 'WPGACXM_PLUGIN_ADMIN_INCLUDES_PATH', WPGACXM_PLUGIN_ADMIN_PATH . trailingslashit ( 'includes' ) );
+define( 'WPGACXM_PLUGIN_ADMIN_SCRIPTS_PATH', WPGACXM_PLUGIN_ADMIN_PATH . trailingslashit ( 'js' ) );
 
-  foreach ($post_types as $type ) {
-    add_action( "manage_${type}_posts_custom_column", 'wpgacxm_admin_add_experiment_column', 10, 2);
-    add_filter( "manage_${type}_posts_columns" , 'wpgacxm_admin_add_experiment_columns' );
+define( 'WPGACXM_PLUGIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
+define( 'WPGACXM_PLUGIN_ADMIN_URL', WPGACXM_PLUGIN_URL . trailingslashit ( 'admin' ) );
+define( 'WPGACXM_PLUGIN_JS_URL', WPGACXM_PLUGIN_ADMIN_URL . trailingslashit( 'js' ) );
+define( 'WPGACXM_PLUGIN_CSS_URL', WPGACXM_PLUGIN_ADMIN_URL . trailingslashit( 'css' ) );
+
+//Are we admin? Let's initialize admin functionality
+if( is_admin() ) {
+  require_once( WPGACXM_PLUGIN_ADMIN_PATH . 'admin.php' );
+  new WPgacxm_admin();
+}
+
+Class WPgacxma {
+
+  public static $instance;
+
+  public function __construct() {
+    //Nothing here yet
+    if(isset(self::$instance)) {
+      //Throw error! we only want one instance
+    } else {
+      self::$instance = $this;
+    }
+
+    add_action( 'init', array($this,'admin_add_experiment_post_type'));
   }
-}
-
-function wpgacxm_admin_add_experiment_columns( $columns ) {
-	$columns['experiments'] = "Experiments";
-	return $columns;
-}
 
 
-/*
- * add flags to single item
- */
-function wpgacxm_admin_add_experiment_column( $col_name, $id ) {
-  if( $col_name !== "experiments" ) return;
-  echo "No experiments";
+  //Setup custom "experiment" post type
+  function admin_add_experiment_post_type() {
+    //Post type wpgacxm_experiment is used to record each experiment 
+    register_post_type( 'wpgacxm_experiment',
+      array(
+        'labels' => array(
+          'name' => __( 'GA Content Experiments', 'wpgacxm' ),
+          'singular_name' => __( 'GA Content Experiment' )
+        ),
+        'public' => false,
+        'has_archive' => true,
+      )
+    );
+    //These status mirror GA's experiment statuses
+    register_post_status( 'draft', array(
+      'label'                     => __( 'Draft', 'wpgacxm' ),
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true
+    ));
+    register_post_status( 'ready_to_run', array(
+      'label'                     => __( 'Ready', 'wpgacxm' ),
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true
+    ));
+    register_post_status( 'running', array(
+      'label'                     => __( 'Running', 'wpgacxm' ),
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true
+    ));
+    register_post_status( 'ended', array(
+      'label'                     => __( 'Ended', 'wpgacxm' ),
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true
+    ));
+  }
+
+  //Gets the experiment associated with post of post_id
+  public function get_experiment_post($post_id) {
+    $args = array(
+      'post_parent' => $post_id,
+      'post_type'   => 'wpgacxm_experiment', 
+      'posts_per_page' => -1,
+      'post_status' => 'any');
+
+    $experiment_post = array_values(get_children( $args ));
+
+    if(isset($experiment_post[0])) {
+      return $experiment_post[0];
+    }
+    return false;
+  }
+
+  //Creates an experiment associated with post of post_id
+  public function ajax_create_experiment_post() {
+    if ( empty( $_POST['post_id'] ) )
+      wp_die( 0 );
+
+    $post_id = (int) $_POST['post_id'];
+
+    $post = array(
+      'post_content'   => 'Enter Experiment Description Here.',
+      'post_title'     => 'New Experiment',
+      'post_status'    => 'draft',
+      'post_type'      => 'wpgacxm_experiment,',
+      'post_parent'    => $post_id
+    );
+    if($new_id = wp_insert_post($post, false)) {
+      wp_die($new_id);
+    }
+
+    //if we go here, we failed
+    wp_die( 0 );
+  }
+
+
 }
-add_action( 'admin_init', 'wpgacxm_manage_posts_columns', 10 );
+
+//Initializes plugin main class
+$wpgacxm = new WPgacxma();
+
