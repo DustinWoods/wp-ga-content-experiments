@@ -35,15 +35,13 @@ Class WPgacxm_admin_metaBoxes {
   }
 
   function get_percent_slider($value = '1') {
-    $html = '<span class="range-display"></span><input name="input-range" type="range" value="'.$value.'" data-format="percent" step="0.005" min="0" max="1" />';
-    return $this->get_option_edit_link($html,((float)$value*100)."%");
+    $valuestr = ((float)$value*100)."%";
+    $html = '<input name="experiment-range" type="range" value="'.$value.'" data-format="percent" step="0.005" min="0" max="1" /><span class="range-display">'.$valuestr.'</span>';
+    return $this->get_option_edit_link($html,$valuestr);
   }
 
   function get_testingfor_select($value = 'MINIMUM') {
-    $options = array(
-      'MAXIMUM'=>__('Maximum'),
-      'MINIMUM'=>__('Minimum')
-    );
+    $options = WPgacxmaExperiment::$testingforOptions;
     $html = "<select name='experiment-testingfor'>";
     $html .= $this->get_options_elements($options,$value);
     $html .= "</select>";
@@ -59,36 +57,7 @@ Class WPgacxm_admin_metaBoxes {
   }
 
   function get_metric_select($value = 'bounces') {
-    $options = array(
-      'adsenseAdsClicks'=>__('Adsense Ads Clicks'),
-      'adsenseAdsViewed'=>__('Adsense Ads Viewed'),
-      'adsenseRevenue'=>__('Adsense Revenue'),
-      'bounces'=>__('Bounces'),
-      'pageviews'=>__('Page Views'),
-      'timeOnSite'=>__('Time On Site'),
-      'transactions'=>__('transactions'),
-      'transactionRevenue'=>__('Transaction Revenue'),
-      'goal1Completions'=>__('Goal 1 Completions'),
-      'goal2Completions'=>__('Goal 2 Completions'),
-      'goal3Completions'=>__('Goal 3 Completions'),
-      'goal4Completions'=>__('Goal 4 Completions'),
-      'goal5Completions'=>__('Goal 5 Completions'),
-      'goal6Completions'=>__('Goal 6 Completions'),
-      'goal7Completions'=>__('Goal 7 Completions'),
-      'goal8Completions'=>__('Goal 8 Completions'),
-      'goal9Completions'=>__('Goal 9 Completions'),
-      'goal10Completions'=>__('Goal 10 Completions'),
-      'goal11Completions'=>__('Goal 11 Completions'),
-      'goal12Completions'=>__('Goal 12 Completions'),
-      'goal13Completions'=>__('Goal 13 Completions'),
-      'goal14Completions'=>__('Goal 14 Completions'),
-      'goal15Completions'=>__('Goal 15 Completions'),
-      'goal16Completions'=>__('Goal 16 Completions'),
-      'goal17Completions'=>__('Goal 17 Completions'),
-      'goal18Completions'=>__('Goal 18 Completions'),
-      'goal19Completions'=>__('Goal 19 Completions'),
-      'goal20Completions'=>__('Goal 20 Completions')
-    );
+    $options = WPgacxmaExperiment::$metricOptions;
     $html = "<select name='experiment-metric'>";
     $html .= $this->get_options_elements($options,$value);
     $html .= "</select>";

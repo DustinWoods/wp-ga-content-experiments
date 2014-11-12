@@ -28,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 //Define some useful stuff
 define( 'WPGACXM_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'WPGACXM_PLUGIN_INCLUDES_PATH', WPGACXM_PLUGIN_PATH . trailingslashit ( 'includes' ) );
 define( 'WPGACXM_PLUGIN_ADMIN_PATH', WPGACXM_PLUGIN_PATH . trailingslashit ( 'admin' ) );
 define( 'WPGACXM_PLUGIN_ADMIN_INCLUDES_PATH', WPGACXM_PLUGIN_ADMIN_PATH . trailingslashit ( 'includes' ) );
 define( 'WPGACXM_PLUGIN_ADMIN_SCRIPTS_PATH', WPGACXM_PLUGIN_ADMIN_PATH . trailingslashit ( 'js' ) );
@@ -42,6 +43,8 @@ if( is_admin() ) {
   require_once( WPGACXM_PLUGIN_ADMIN_PATH . 'admin.php' );
   new WPgacxm_admin();
 }
+
+require_once(WPGACXM_PLUGIN_INCLUDES_PATH . 'WPgacxmaExperiment.class.php');
 
 Class WPgacxma {
 
@@ -73,34 +76,21 @@ Class WPgacxma {
       )
     );
     //These status mirror GA's experiment statuses
-    register_post_status( 'draft', array(
-      'label'                     => __( 'Draft', 'wpgacxm' ),
-      'public'                    => true,
-      'exclude_from_search'       => false,
-      'show_in_admin_all_list'    => true,
-      'show_in_admin_status_list' => true
-    ));
-    register_post_status( 'ready_to_run', array(
-      'label'                     => __( 'Ready', 'wpgacxm' ),
-      'public'                    => true,
-      'exclude_from_search'       => false,
-      'show_in_admin_all_list'    => true,
-      'show_in_admin_status_list' => true
-    ));
-    register_post_status( 'running', array(
-      'label'                     => __( 'Running', 'wpgacxm' ),
-      'public'                    => true,
-      'exclude_from_search'       => false,
-      'show_in_admin_all_list'    => true,
-      'show_in_admin_status_list' => true
-    ));
-    register_post_status( 'ended', array(
-      'label'                     => __( 'Ended', 'wpgacxm' ),
-      'public'                    => true,
-      'exclude_from_search'       => false,
-      'show_in_admin_all_list'    => true,
-      'show_in_admin_status_list' => true
-    ));
+    $statuses = array(
+      'draft' => 'Draft',
+      'ready_to_run' => 'Ready',
+      'running' => 'Running',
+      'ended' => 'Ended'
+    );
+    foreach ($statuses as $slug => $label) {
+      register_post_status( $slug, array(
+        'label'                     => __( $label, 'wpgacxm' ),
+        'public'                    => true,
+        'exclude_from_search'       => false,
+        'show_in_admin_all_list'    => true,
+        'show_in_admin_status_list' => true
+      ));
+    }
   }
 
   //Gets the experiment associated with post of post_id

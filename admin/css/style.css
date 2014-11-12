@@ -69,3 +69,18 @@
 	vertical-align: super;
 	margin: -100% -5% 0 0;
 }
+
+
+
+.edit-experiment-prop .range-display {
+	display: inline-block;
+	vertical-align: text-bottom;
+	margin: 0 0.6em;
+}
+.edit-experiment-prop .edit-area {
+	white-space: nowrap;
+}
+.edit-experiment-prop .edit-area > * {
+	display: inline-block;
+	vertical-align: middle;
+}
