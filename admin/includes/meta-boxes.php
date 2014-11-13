@@ -21,6 +21,11 @@ Class WPgacxm_admin_metaBoxes {
     return $html;
   }
 
+  function get_email_input($value = 'admin@domain.com') {
+    $html = '<input name="experiment-email" type="email" value="'.$value.'" />';
+    return $this->get_option_edit_link($html,$value);
+  }
+
   function get_days_select($value = '3') {
     $html = '<input name="experiment-minimumdays" type="number" value="'.$value.'" min="3" max="90" />';
     return $this->get_option_edit_link($html,$value);
@@ -30,13 +35,23 @@ Class WPgacxm_admin_metaBoxes {
     return $this->get_percent_slider($value);
   }
 
-  function get_confidence_slider($value = '0.95') {
-    return $this->get_percent_slider($value);
+  function get_confidence_options($value = '0.95') {
+    $options = array(
+      '0.95'=>'95.0%',
+      '0.96'=>'96.0%',
+      '0.97'=>'97.0%',
+      '0.98'=>'98.0%',
+      '0.99'=>'99.0%',
+      '0.995'=>'99.5%');
+    $html = "<select name='experiment-confidence'>";
+    $html .= $this->get_options_elements($options,$value);
+    $html .= "</select>";
+    return $this->get_option_edit_link($html,$options[$value]);
   }
 
   function get_percent_slider($value = '1') {
     $valuestr = ((float)$value*100)."%";
-    $html = '<input name="experiment-range" type="range" value="'.$value.'" data-format="percent" step="0.005" min="0" max="1" /><span class="range-display">'.$valuestr.'</span>';
+    $html = '<input name="experiment-range" type="range" value="'.$value.'" data-format="percent" step="0.01" min="0" max="1" /><span class="range-display">'.$valuestr.'</span>';
     return $this->get_option_edit_link($html,$valuestr);
   }
 
@@ -104,6 +119,10 @@ Class WPgacxm_admin_metaBoxes {
 
     $post = WPgacxma::$instance->get_experiment_post($editing_post->ID);
 
+
+    
+
+
     if($post === false) {
       //No experiment
       ?>
@@ -115,11 +134,14 @@ Class WPgacxm_admin_metaBoxes {
     <div class="misc-experiment-props">
       <div class="misc-pub-section advanced-experimnt-prop"><label for=""><?php _e('Title'); ?>:</label><input type="text" id="" name="" size="16" autocomplete="off" value="<?php echo htmlentities($editing_post->post_title); ?>"></div>
       <div class="misc-pub-section advanced-experimnt-prop"><label for="experiment-description"><?php _e('Hypothesis'); ?>:</label><textarea name="experiment-description" placeholder="<?php _e('Describe the experiment'); ?>"><?php echo $editing_post->post_type." ".htmlentities($editing_post->post_title); ?></textarea></div>
-      <div class="misc-pub-section advanced-experimnt-prop"><label class="selectit"><input value="1" type="checkbox" name="experiment_equal_weight" checked=""><?php _e('Equal Traffic Weight'); ?></label></div>
+      <div class="misc-pub-section advanced-experimnt-prop"><label class="selectit"><input value="1" type="checkbox" name="experiment_equal_weight" checked=""><?php _e('Distribute traffic evenly across all variations.'); ?></label></div>
       <div class="misc-pub-section"><?php printf(__('Experiment must run for at least %s days.'),$this->get_days_select()); ?></div>
-      <div class="misc-pub-section"><?php printf(__('Testing for %s %s.'),$this->get_testingfor_select(),$this->get_metric_select()); ?></div>
+      <div class="misc-pub-section"><?php printf(__('Testing to %s %s.'),$this->get_testingfor_select(),$this->get_metric_select()); ?></div>
       <div class="misc-pub-section"><?php printf(__('Experiment on %s of traffic.'),$this->get_traffic_slider());  ?></div>
-      <div class="misc-pub-section"><?php printf(__('Choose winner with %s confidence.'),$this->get_confidence_slider());  ?></div>
+      <div class="misc-pub-section"><?php printf(__('Choose winner with %s confidence.'),$this->get_confidence_options());  ?></div>
+      <div class="misc-pub-section"><label class="selectit"><input value="1" type="checkbox" name="experiment_use_winner" checked=""><?php printf(__('Publish winning %1$s when experiment has ended.'),strtolower(get_post_type_labels(get_post_type_object($editing_post->post_type))->singular_name)); ?></label></div>
+      <div class="misc-pub-section"><label class="selectit"><input value="1" type="checkbox" name="experiment_trash_loser" checked=""><?php printf(__('Move losing %1$s to trash.'),strtolower(get_post_type_labels(get_post_type_object($editing_post->post_type))->name)); ?></label></div>
+      <div class="misc-pub-section"><label class="selectit"><input value="1" type="checkbox" name="experiment_email_setting" checked=""><?php printf(__('Send email to %s when experiment has ended.'),$this->get_email_input()); ?></label></div>
       <div class="misc-pub-section"><?php printf(__('Status: %s'),$this->get_status_option());  ?></div>
     </div>
 

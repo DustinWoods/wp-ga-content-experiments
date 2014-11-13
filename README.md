@@ -1,7 +1,7 @@
 wp-ga-content-experiments
 =========================
 
-Wordpress plugin for managing and executing Google Analytics content experiments using Management API and Measurement Protocol.
+This is an unfunished wordpress plugin designed to managing [Google Analytics Content Experiments](https://developers.google.com/analytics/devguides/platform/experiments-overview) using Management API.
 
 
-##This project is in early stages of prototyping##
+##This plugin is not yet functional##

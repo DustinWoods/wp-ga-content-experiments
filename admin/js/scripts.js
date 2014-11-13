@@ -4,13 +4,13 @@ jQuery(document).ready( function($) {
 		postId = $('#post_ID').val() || 0;
 
 	var format_percent = function(dec) {
-		return Math.round(parseFloat(dec)*10000)/100+"%";
+		return Math.round(parseFloat(dec)*100)+"%";
 	};
 
 	$postExperimentMetaBox.find('.create-experiment').click( function( event ) {
 		$.post(ajaxurl, {
-				action: 'wpgacxm-create-experiment',
-				post_id: postId
+				'action': 'wpgacxm-create-experiment',
+				'post_id': postId
 			}, function(response) {
 			if(response != 0) {
 				location.reload();
@@ -56,7 +56,7 @@ jQuery(document).ready( function($) {
 					break;
 
 				case 'select':
-					newvalue = $input.find('option[value='+newvalue+']').text();
+					newvalue = $input.find('option[value="'+newvalue+'"]').text();
 					break;
 			};
 			$textedit.find('span').text(newvalue);

@@ -26,7 +26,29 @@ Class WPgacxm_admin {
   }
 
   private function setup_ajax_handlers() {
-    add_action( 'wp_ajax_wpgacxm-create-experiment', array(WPgacxma::$instance,'ajax_create_experiment_post'), 1 );
+    add_action( 'wp_ajax_wpgacxm-create-experiment', array($this,'ajax_create_experiment_post') );
+  }
+
+  //Creates an experiment associated with post of post_id
+  public function ajax_create_experiment_post() {
+    if ( empty( $_REQUEST['post_id'] ) )
+      wp_die( 0 );
+
+    $post_id = (int) $_REQUEST['post_id'];
+
+    $post = array(
+      'post_content'   => 'Enter Experiment Description Here.',
+      'post_title'     => 'New Experiment',
+      'post_status'    => 'draft',
+      'post_type'      => 'wpgacxm_experiment,',
+      'post_parent'    => $post_id
+    );
+    if($new_id = wp_insert_post($post, false)) {
+      wp_die($new_id);
+    }
+
+    //if we go here, we failed
+    wp_die( 0 );
   }
 
   //Let's setup some scripts!

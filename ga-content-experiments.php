@@ -109,28 +109,6 @@ Class WPgacxma {
     return false;
   }
 
-  //Creates an experiment associated with post of post_id
-  public function ajax_create_experiment_post() {
-    if ( empty( $_POST['post_id'] ) )
-      wp_die( 0 );
-
-    $post_id = (int) $_POST['post_id'];
-
-    $post = array(
-      'post_content'   => 'Enter Experiment Description Here.',
-      'post_title'     => 'New Experiment',
-      'post_status'    => 'draft',
-      'post_type'      => 'wpgacxm_experiment,',
-      'post_parent'    => $post_id
-    );
-    if($new_id = wp_insert_post($post, false)) {
-      wp_die($new_id);
-    }
-
-    //if we go here, we failed
-    wp_die( 0 );
-  }
-
 
 }
 

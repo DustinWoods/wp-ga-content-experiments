@@ -50,13 +50,13 @@
 	position: relative;
 }
 .edit-experiment-prop .edit-link {
-
+/*	text-decoration: none;*/
 }
 .edit-experiment-prop .edit-area {
 	display: none;
 	position: absolute;
-	left: 2px;
-	top: -4px;
+	left: 0px;
+	top: -3px;
 	padding: 3px 4px;
 	background: #F3F3F3;
 	z-index: 99998;
@@ -68,6 +68,7 @@
 	font-size: .97em;
 	vertical-align: super;
 	margin: -100% -5% 0 0;
+	display: none;
 }
 
 
@@ -83,4 +84,11 @@
 .edit-experiment-prop .edit-area > * {
 	display: inline-block;
 	vertical-align: middle;
+}
+
+.edit-link > span {
+/*box-shadow: inset 0px 1px 3px 0px rgba(174, 174, 174, 0.56);
+border: 1px solid #DDDDDD;
+padding: 2px 6px 2px;*/
+font-weight: bold;
 }

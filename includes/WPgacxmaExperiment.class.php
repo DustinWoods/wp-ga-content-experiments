@@ -36,13 +36,13 @@ Class WPgacxmaExperiment {
 	);
 
 	public static $testingforOptions = array(
-      'MAXIMUM'=>'Maximum',
-      'MINIMUM'=>'Minimum'
+      'MAXIMUM'=>'Maximize',
+      'MINIMUM'=>'Minimize'
     );
 
 	public $experiment_post;
 
-    public function __construct($experiment_id == null) {
+    public function __construct($experiment_id = null) {
 
     	if($experiment_id !== null) {
     		$this->$experiment_post = get_post($experiment_id);
