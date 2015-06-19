@@ -123,7 +123,7 @@ Class WPgacxm_admin_metaBoxes {
   //Renders content for meta box on post
   function admin_post_meta_box($editing_post, $args = array()) {
 
-    $post = WPgacxma::get_instance()->get_experiment_post($editing_post->ID);
+    $post = WPgacxma::get_instance()->get_current_experiment_post($editing_post->ID);
 
 
 

@@ -95,12 +95,13 @@ Class WPgacxma {
   }
 
   //Gets the experiment associated with post of post_id
-  public function get_experiment_post($post_id) {
+  public function get_current_experiment_post($post_id) {
     $args = array(
       'post_parent' => $post_id,
       'post_type'   => 'wpgacxm_experiment', 
       'posts_per_page' => -1,
-      'post_status' => 'any');
+      'post_status' => array('draft','ready_to_run','running')
+    );
 
     $experiment_post = array_values(get_children( $args ));
 
