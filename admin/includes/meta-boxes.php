@@ -1,15 +1,21 @@
 <?php
 Class WPgacxm_admin_metaBoxes {
 
-  public static $instance;
+  private static $instance;
 
-  public function __construct() {
-    if(isset(self::$instance)) {
-      //Throw error! we only want one instance
-    } else {
-      self::$instance = $this;
-    }
+  private function __construct() {
+
   }
+
+  public static function get_instance() {
+
+    if(!isset(self::$instance)) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+    
+  }  
 
   //creates a text link describing the value
   //When link is clicked, input field is shown
@@ -117,10 +123,8 @@ Class WPgacxm_admin_metaBoxes {
   //Renders content for meta box on post
   function admin_post_meta_box($editing_post, $args = array()) {
 
-    $post = WPgacxma::$instance->get_experiment_post($editing_post->ID);
+    $post = WPgacxma::get_instance()->get_experiment_post($editing_post->ID);
 
-
-    
 
 
     if($post === false) {

@@ -41,26 +41,27 @@ define( 'WPGACXM_PLUGIN_CSS_URL', WPGACXM_PLUGIN_ADMIN_URL . trailingslashit( 'c
 //Are we admin? Let's initialize admin functionality
 if( is_admin() ) {
   require_once( WPGACXM_PLUGIN_ADMIN_PATH . 'admin.php' );
-  new WPgacxm_admin();
 }
 
 require_once(WPGACXM_PLUGIN_INCLUDES_PATH . 'WPgacxmaExperiment.class.php');
 
 Class WPgacxma {
 
-  public static $instance;
+  private static $instance;
 
-  public function __construct() {
-    //Nothing here yet
-    if(isset(self::$instance)) {
-      //Throw error! we only want one instance
-    } else {
-      self::$instance = $this;
-    }
-
+  private function __construct() {
     add_action( 'init', array($this,'admin_add_experiment_post_type'));
   }
 
+  public static function get_instance() {
+
+    if(!isset(self::$instance)) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+    
+  }
 
   //Setup custom "experiment" post type
   function admin_add_experiment_post_type() {
@@ -109,9 +110,7 @@ Class WPgacxma {
     return false;
   }
 
-
 }
 
 //Initializes plugin main class
-$wpgacxm = new WPgacxma();
-
+WPgacxma::get_instance();

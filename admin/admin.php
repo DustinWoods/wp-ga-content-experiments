@@ -5,18 +5,9 @@ require_once( WPGACXM_PLUGIN_ADMIN_INCLUDES_PATH . 'meta-boxes.php' );
 
 Class WPgacxm_admin {
 
-  public static $instance;
+  private static $instance;
 
-  public function __construct() {
-
-    new WPgacxm_admin_metaBoxes();
-
-    if(isset(self::$instance)) {
-      //Throw error! we only want one instance
-    } else {
-      self::$instance = $this;
-    }
-
+  private function __construct() {
     add_action( 'admin_init', array($this,'admin_add_posts_columns'), 10 );
     add_action( 'add_meta_boxes', array($this,'admin_add_meta_boxes') );
     add_action( 'init', array($this,'admin_enqueue_scripts') );
@@ -24,6 +15,16 @@ Class WPgacxm_admin {
     //Setup ajax handler actions
     $this->setup_ajax_handlers();
   }
+
+  public static function get_instance() {
+
+    if(!isset(self::$instance)) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+    
+  }  
 
   private function setup_ajax_handlers() {
     add_action( 'wp_ajax_wpgacxm-create-experiment', array($this,'ajax_create_experiment_post') );
@@ -73,7 +74,7 @@ Class WPgacxm_admin {
     $post_types = $this->get_enabled_post_types();
 
     foreach ($post_types as $type ) {
-      add_meta_box( 'wpgacxm-meta-box', __('GA Content Experiments', 'wpgacxm'), array(WPgacxm_admin_metaBoxes::$instance,'admin_post_meta_box'), $type, 'side', 'high' );
+      add_meta_box( 'wpgacxm-meta-box', __('GA Content Experiments', 'wpgacxm'), array(WPgacxm_admin_metaBoxes::get_instance(),'admin_post_meta_box'), $type, 'side', 'high' );
     }
   }
 
@@ -107,3 +108,6 @@ Class WPgacxm_admin {
     echo "No experiments";
   }
 }
+
+//Initializes admin class
+WPgacxm_admin::get_instance();
